@@ -7,11 +7,12 @@ class MesaController
     public function CargarUno($request, $response, $args)
     {
         $parametros = $request->getParsedBody();
-
+        $codigomesa = $parametros['codigomesa'];
         $estado = $parametros['estado'];
 
 
         $mesa = new Mesa();
+        $mesa->codigomesa = $codigomesa;
         $mesa->estado = $estado;
 
  
@@ -22,6 +23,17 @@ class MesaController
         $response->getBody()->write($payload);
         return $response
           ->withHeader('Content-Type', 'application/json');
+    }
+
+    public function TraerUno($request, $response, $args)
+    {
+      $codigomesa = $args['codigomesa'];
+      $mesa = Mesa::obtenerMesa($codigomesa);
+      $payload = json_encode($mesa);
+
+      $response->getBody()->write($payload);
+      return $response
+        ->withHeader('Content-Type', 'application/json');
     }
 
 

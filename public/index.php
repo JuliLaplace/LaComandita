@@ -11,6 +11,7 @@ require_once './controllers/UsuarioController.php';
 require_once './controllers/ProductoController.php';
 require_once './controllers/PedidoController.php';
 require_once './controllers/MesaController.php';
+require_once './controllers/DetallePedidoController.php';
 require_once './db/AccesoDatos.php';
 
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
@@ -23,14 +24,16 @@ $app->addRoutingMiddleware();
 $errorMiddleware = $app->addErrorMiddleware(true, true, true);
 
 $app->get('/', function (Request $request, Response $response, $args) {
-    $response->getBody()->write("hola alumnos de los lunes!");
+    $response->getBody()->write("TP La comandita :) !");
     return $response;
 });
 
 // peticiones
 $app->group('/usuarios', function (RouteCollectorProxy $group) {
     $group->get('[/]', \UsuarioController::class . ':TraerTodos');//funciona
+    $group->get('/{usuario}', \UsuarioController::class . ':TraerUno');//funciona
     $group->post('[/]', \UsuarioController::class . ':CargarUno'); //funciona
+    $group->delete('/{usuario}[/]', \UsuarioController::class . ':BorrarUno'); //funciona
   });
 
   $app->group('/productos', function (RouteCollectorProxy $group) {
@@ -40,13 +43,17 @@ $app->group('/usuarios', function (RouteCollectorProxy $group) {
 
   $app->group('/mesas', function (RouteCollectorProxy $group) {
     $group->get('[/]', \MesaController::class . ':TraerTodos');
-    $group->post('[/]', \MesaController::class . ':CargarUno'); 
+    $group->post('[/]', \MesaController::class . ':CargarUno');
+    $group->get('/{codigomesa}', \MesaController::class . ':TraerUno');
   });
 
   $app->group('/pedidos', function (RouteCollectorProxy $group) {
     $group->get('[/]', \PedidoController::class . ':TraerTodos');
-    $group->post('[/]', \PedidoController::class . ':CargarUno'); 
+    $group->post('[/]', \PedidoController::class . ':CargarUno'); //primero cargo un pedido, despues el detalle - FUNCIONA
+    $group->get('/detalles', \DetallePedidoController::class . ':TraerTodos');
+    $group->post('/pedido', \DetallePedidoController::class . ':cargarUno');//FUNCIONA
 });
+
 
 
 // Run app

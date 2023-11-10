@@ -1,52 +1,74 @@
-<?php
+<?php 
 
-class Pedido
-{
+class Pedido{
+
     public $id;
-    public $mesa;
-    public $id_cliente;
-    public $id_producto;
-    public $estado; // en proceso - finalizado
-    public $fechaCreacion;
-    public $fechaCalculada;
-    public $fechaFinalizada;
-    public $precio_final;
+    public $codigoPedido;
+    public $idCliente;
+    public $codigoMesa;
+    public $idEmpleado;
+    public $fecha;
+    public $precioFinal;
+
 
     public function crearPedido()
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
-        $consulta = $objAccesoDatos->prepararConsulta("INSERT INTO pedido (mesa, id_cliente,id_producto, estado, fechaCreacion, fechaCalculada, fechaFinalizada, precio) VALUES (:mesa, :id_cliente,:id_producto, :estado, :fechaCreacion, :fechaCalculada, :fechaFinalizada, :precio)");
-        $consulta->bindValue(':mesa', $this->mesa);
-        $consulta->bindValue(':id_cliente', $this->id_cliente);
-        $consulta->bindValue(':id_producto', $this->id_producto);
-        $consulta->bindValue(':estado', $this->estado);
-        $consulta->bindValue(':fechaCreacion', $this->fechaCreacion);
-        $consulta->bindValue(':fechaCalculada', $this->fechaCalculada);
-        $consulta->bindValue(':fechaFinalizada', $this->fechaFinalizada);
-        $consulta->bindValue(':precio', $this->precio_final);
-
+        $consulta = $objAccesoDatos->prepararConsulta("INSERT INTO pedidos (codigoPedido, idCliente, codigoMesa, idEmpleado, fecha, precioFinal) VALUES (:codigoPedido, :idCliente, :codigoMesa, :idEmpleado, :fecha, :precioFinal)");
+        
+        $consulta->bindValue(':codigoPedido', $this->codigoPedido, PDO::PARAM_STR);
+        $consulta->bindValue(':codigoMesa', $this->codigoMesa, PDO::PARAM_STR);
+        $consulta->bindValue(':idEmpleado', $this->idEmpleado, PDO::PARAM_INT);
+        $consulta->bindValue(':idCliente', $this->idCliente, PDO::PARAM_INT);
+        $consulta->bindValue(':fecha', $this->fecha);
+        $consulta->bindValue(':precioFinal', $this->precio_final, PDO::PARAM_STR);
+    
         $consulta->execute();
-
-        return $objAccesoDatos->obtenerUltimoId();
+     
     }
 
-    public static function obtenerTodosPedidos()
+
+    public static function obtenerTodos()
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
-        $consulta = $objAccesoDatos->prepararConsulta("
-            SELECT pedido.id, pedido.mesa, pedido.id_cliente, pedido.id_producto, pedido.estado, pedido.fechaCreacion, pedido.fechaCalculada, pedido.fechaFinalizada, pedido.precio, cliente.nombre AS nombre_cliente, estadopedido.estado AS nombre_estado
-            FROM pedido
-            JOIN cliente ON pedido.id_cliente = cliente.id
-            JOIN estadopedido ON pedido.estado = estadopedido.id
-            JOIN productos ON pedido.id_producto = productos.id
-
-      
-        ");
+        $consulta = $objAccesoDatos->prepararConsulta("SELECT id, codigoPedido, idCliente, codigoMesa, idEmpleado, fecha, precioFinal FROM pedidos");
         $consulta->execute();
 
         return $consulta->fetchAll(PDO::FETCH_CLASS, 'Pedido');
     }
 
+    public static function ExisteCodigoPedido($codigo)
+    {
+        $listaPedidos = Pedido::obtenerTodos();
+        $idCodigoPedido = -1;
+
+        foreach ($listaPedidos as $item) {
+            if ($item->codigopedido === $codigo) {
+                $idCodigoPedido = $item->id;
+                break;
+            }
+        }
+
+        return $idCodigoPedido;
+    }
+
+    public static function SumaPrecio($id, $monto)
+    {
+        $objAccesoDatos = AccesoDatos::obtenerInstancia();
+
+        $consulta = $objAccesoDatos->prepararConsulta("UPDATE pedidos SET precioFinal = precioFinal + :monto WHERE id = :id");
+        
+        $consulta->bindValue(':id', $id, PDO::PARAM_INT);
+        $consulta->bindValue(':monto', $monto, PDO::PARAM_STR);
+
+        $consulta->execute();
+
+        return $consulta->rowCount();
+
+    }
+
+
 }
+
 
 ?>

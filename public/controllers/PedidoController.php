@@ -1,50 +1,86 @@
 <?php
+    require_once("./models/Pedido.php");
+    require_once("./models/Mesa.php");
 
-require_once './models/Pedido.php';
+    class PedidoController{
 
-class PedidoController 
-{
-    public function CargarUno($request, $response, $args)
-    {
-        $parametros = $request->getParsedBody();
+        public function cargarUno($request, $response, $args)
+        {
+            $parametros = $request->getParsedBody();
+            
+            $codigoPedido = $parametros['codigopedido'];
+            $codigoMesa = $parametros['codigomesa'];
+            $idEmpleado = $parametros['idempleado'];
+            $idCliente = $parametros['idcliente'];
+            $fecha = date("Y-m-d H:i:s");
 
-        $mesa = $parametros['mesa'];
-        $id_cliente = $parametros['id_cliente'];
-        $estado = $parametros['estado'];
-        $fechaCreacion = $parametros['fechaCreacion'];
-        $fechaCalculada = $parametros['fechaCalculada'];
-        $fechaFinalizada = $parametros['fechaFinalizada'];
-        $precio_final = $parametros['precio'];
-        $id_producto = $parametros['id_producto'];
 
-        $pedido = new Pedido();
-        $pedido->mesa = $mesa;
-        $pedido->id_cliente = $id_cliente;
-        $pedido->estado = $estado;
-        $pedido->fechaCreacion = $fechaCreacion;
-        $pedido->fechaCalculada = $fechaCalculada;
-        $pedido->fechaFinalizada = $fechaFinalizada;
-        $pedido->precio_final = $precio_final;
-        $pedido->id_producto = $id_producto;
+            $idMesa = Mesa::ObtenerIdPorCodigoDeMesa($codigoMesa);
+            //var_dump(Mesa::VerificarEstadoMesa($idMesa));
 
-        $pedido->crearPedido();
+            if($idMesa != -1)
+            {
+                var_dump(Mesa::VerificarEstadoMesa($idMesa));
+                if(Mesa::VerificarEstadoMesa($idMesa) == "abierta") //si la mesa esta abierta sin clientes
+                {
+                    if($idEmpleado != -1)
+                    {
+                        if($idCliente != -1)
+                        {                            
+                            $pedido = new Pedido();
+                            $pedido->codigoPedido = $codigoPedido;
+                            $pedido->codigoMesa = $codigoMesa;
+                            $pedido->idEmpleado =  $idEmpleado;
+                            $pedido->idCliente = $idCliente;
+                            $pedido->fecha = $fecha;
+                            $pedido->precio_final = 0;
+                            
+                            Mesa::CambiarEstadoMesa($idMesa, 1); //estado de mesa tiene que cambiar a "cliente esperando pedido"
+                            
+                            $pedido->crearPedido();
+                
+                            $payload = json_encode(array("mensaje"=>"Pedido creado con exito"));
+                        }
+                        else
+                        {
+                            $payload = json_encode(array("mensaje"=>"El id del cliente no existe."));
+                        }
+                    }
+                    else
+                    {
+                        $payload = json_encode(array("mensaje"=>"El id de empleado no existe."));
+                    }
+                }
+                else
+                {
+                    $payload = json_encode(array("mensaje"=>"La mesa seleccionada se encuentra ocupada."));
+                }
+            }
+            else
+            {
+                $payload = json_encode(array("mensaje"=>"La mesa ingresada no existe."));
+            }
 
-        $payload = json_encode(array("mensaje" => "Pedido creado con éxito"));
 
-        $response->getBody()->write($payload);
-        return $response->withHeader('Content-Type', 'application/json');
+            $response->getBody()->write($payload);
+
+            return $response->withHeader('Content-Type', 'application/json');
+
+        }
+
+        public function TraerTodos($request, $response, $args)
+        {
+            $lista = Pedido::obtenerTodos();
+            $payload = json_encode(array("listaPedido"=> $lista));
+
+            $response->getBody()->write($payload);
+            
+            return $response->withHeader('Content-Type', 'application/json');
+
+        }
+
+
     }
 
-    public function TraerTodos($request, $response, $args)
-    {
-        $lista = Pedido::obtenerTodosPedidos();
-        $payload = json_encode(array("listaPedidos" => $lista));
-
-        $response->getBody()->write($payload);
-        return $response->withHeader('Content-Type', 'application/json');
-    }
-
-
-}
 
 ?>
