@@ -1,13 +1,14 @@
 <?php
+
+use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
-use Slim\Psr7\Response;
 
 
 class LoginMDW
 {
 
-    public function __invoke(Request $request, RequestHandler $handler): Response
+    public function __invoke(Request $request, RequestHandler $handler)
     {
         $params = $request->getParsedBody();
 
@@ -15,7 +16,6 @@ class LoginMDW
         $clave = $params['clave'];
 
         if (Empleado::empleadoExiste($usuario, $clave)) {
-            $response = new Response();
             $response = $handler->handle($request);
         } else {
             $response = new Response();
