@@ -9,12 +9,14 @@ class Pedido{
     public $idEmpleado;
     public $fecha;
     public $precioFinal;
+    public $estado;
+    
 
 
     public function crearPedido()
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
-        $consulta = $objAccesoDatos->prepararConsulta("INSERT INTO pedidos (codigoPedido, idCliente, codigoMesa, idEmpleado, fecha, precioFinal) VALUES (:codigoPedido, :idCliente, :codigoMesa, :idEmpleado, :fecha, :precioFinal)");
+        $consulta = $objAccesoDatos->prepararConsulta("INSERT INTO pedidos (codigoPedido, idCliente, codigoMesa, idEmpleado, fecha, precioFinal, estado) VALUES (:codigoPedido, :idCliente, :codigoMesa, :idEmpleado, :fecha, :precioFinal, :estado)");
         
         $consulta->bindValue(':codigoPedido', $this->codigoPedido, PDO::PARAM_STR);
         $consulta->bindValue(':codigoMesa', $this->codigoMesa, PDO::PARAM_STR);
@@ -22,6 +24,7 @@ class Pedido{
         $consulta->bindValue(':idCliente', $this->idCliente, PDO::PARAM_INT);
         $consulta->bindValue(':fecha', $this->fecha);
         $consulta->bindValue(':precioFinal', $this->precio_final, PDO::PARAM_STR);
+        $consulta->bindValue(':estado', $this->estado, PDO::PARAM_INT);
     
         $consulta->execute();
      
@@ -31,7 +34,7 @@ class Pedido{
     public static function obtenerTodos()
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
-        $consulta = $objAccesoDatos->prepararConsulta("SELECT id, codigoPedido, idCliente, codigoMesa, idEmpleado, fecha, precioFinal FROM pedidos");
+        $consulta = $objAccesoDatos->prepararConsulta("SELECT id, codigoPedido, idCliente, codigoMesa, idEmpleado, fecha, precioFinal, estado FROM pedidos");
         $consulta->execute();
 
         return $consulta->fetchAll(PDO::FETCH_CLASS, 'Pedido');
@@ -67,8 +70,15 @@ class Pedido{
 
     }
 
+    public static function obtenerPedido($codigo)
+    {
+        $objAccesoDatos = AccesoDatos::obtenerInstancia();
+        $consulta = $objAccesoDatos->prepararConsulta("SELECT id, codigoPedido, idCliente, codigoMesa, idEmpleado, fecha, precioFinal, estado FROM pedidos WHERE codigoPedido = :codigo");
+        $consulta->bindValue(':codigo', $codigo, PDO::PARAM_STR);
+        $consulta->execute();
+
+        return $consulta->fetchObject('Pedido');
+    }
+
 
 }
-
-
-?>

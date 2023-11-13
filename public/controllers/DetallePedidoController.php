@@ -1,9 +1,10 @@
 <?php
-    require_once("./models/DetallePedido.php");
-    require_once("./models/Producto.php");
-    require_once("./models/Pedido.php");
+    require_once "./models/DetallePedido.php";
+    require_once "./models/Producto.php";
+    require_once "./models/Pedido.php";
 
-    class DetallePedidoController{
+    class DetallePedidoController
+    {
 
         public function cargarUno($request, $response, $args)
         {
@@ -12,9 +13,10 @@
             $codigoPedido = $parametros['codigopedido'];
             $nombreProducto = $parametros['producto'];
             $idProducto = Producto::ObtenerIdPorNombre($nombreProducto);
+            $tiempoProducto = Producto::ObtenerTiempoPreparacion($idProducto);
             
             $idPedido = Pedido::ExisteCodigoPedido($codigoPedido);
-             var_dump($idProducto, $idPedido);
+            //var_dump($idProducto, $idPedido);
            if( $idPedido!= -1) //si pedido existe
             {
 
@@ -23,8 +25,8 @@
                         $detallePedido = new DetallePedido();
                         $detallePedido->codigoPedido = $codigoPedido;
                         $detallePedido->idProducto = $idProducto;
-                        $detallePedido->tiempoCalculado = -1; //tengo que mejorar esto
-                        $detallePedido->estado = 1;
+                        $detallePedido->tiempoCalculado = $tiempoProducto; //tengo que mejorar esto
+                        //$detallePedido->estado = 1;
 
                         Pedido::SumaPrecio($idPedido, Producto::ObtenerPrecioProductoPorId($idProducto));
 
@@ -66,8 +68,4 @@
 
 
 
-
     }
-
-
-?>

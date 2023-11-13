@@ -1,8 +1,10 @@
 <?php
     require_once("./models/Pedido.php");
     require_once("./models/Mesa.php");
+    require_once './interfaces/IApi.php';
 
-    class PedidoController{
+    class PedidoController implements IApi
+    {
 
         public function cargarUno($request, $response, $args)
         {
@@ -21,7 +23,7 @@
             if($idMesa != -1)
             {
                 var_dump(Mesa::VerificarEstadoMesa($idMesa));
-                if(Mesa::VerificarEstadoMesa($idMesa) == "abierta") //si la mesa esta abierta sin clientes
+                if(Mesa::VerificarEstadoMesa($idMesa) == "cerrada") //si la mesa esta cerrada sin clientes
                 {
                     if($idEmpleado != -1)
                     {
@@ -34,6 +36,7 @@
                             $pedido->idCliente = $idCliente;
                             $pedido->fecha = $fecha;
                             $pedido->precio_final = 0;
+                            $pedido->estado=1; //estado en proceso
                             
                             Mesa::CambiarEstadoMesa($idMesa, 1); //estado de mesa tiene que cambiar a "cliente esperando pedido"
                             
@@ -79,8 +82,17 @@
 
         }
 
+        public function TraerUno($request, $response, $args)
+        {
+            $codigo = $args['codigo'];
+
+            $pedido = Pedido::obtenerPedido($codigo);
+            $payload = json_encode($pedido);
+
+            $response->getBody()->write($payload);
+            return $response
+                ->withHeader('Content-Type', 'application/json');
+        }
+
 
     }
-
-
-?>
