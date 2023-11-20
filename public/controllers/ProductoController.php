@@ -1,8 +1,8 @@
 <?php
 require_once './models/Producto.php';
-require_once './interfaces/IApi.php';
+require_once './interfaces/IApiController.php';
 
-class ProductoController implements IApi
+class ProductoController implements IApiController
 {
 
     public function CargarUno($request, $response, $args)
@@ -20,9 +20,9 @@ class ProductoController implements IApi
         $prod->sector = $sector;
         $prod->tiempopreparacion = $tiempopreparacion;
 
-        $prod->crearProducto();
+        $prod->crearUno();
 
-        $payload = json_encode(array("mensaje" => "Producto creado con éxito"));
+        $payload = json_encode(array("mensaje" => "Producto creado con exito"));
 
         $response->getBody()->write($payload);
         return $response->withHeader('Content-Type', 'application/json');
@@ -30,10 +30,13 @@ class ProductoController implements IApi
 
     public function TraerUno($request, $response, $args)
     {
-        $id = $args['id'];
-
-        $producto = Producto::obtenerProducto($id);
-        $payload = json_encode($producto);
+        $prod = $args['producto'];
+        $producto = Producto::obtenerUno($prod);
+        if (!$producto) {
+            $payload = json_encode(array("mensaje" => "El producto no existe"));
+          } else {
+            $payload = json_encode($producto);
+          }
 
         $response->getBody()->write($payload);
         return $response
@@ -43,7 +46,7 @@ class ProductoController implements IApi
 
     public function TraerTodos($request, $response, $args)
     {
-        $lista = Producto::obtenerTodosProductos();
+        $lista = Producto::obtenerTodos();
         $payload = json_encode(array("listaProductos" => $lista));
 
         $response->getBody()->write($payload);
@@ -67,8 +70,8 @@ class ProductoController implements IApi
 
         $nombre = $parametros['nombre'];
         $precio = $parametros['precio'];
-        $id = $parametros['id'];
-        $mensaje = Producto::modificarUno($nombre, $precio, $id);
+        $tiempo = $parametros['tiempo'];
+        $mensaje = Producto::modificarUno($nombre, $precio, $tiempo);
 
         $payload = json_encode(array("mensaje" => $mensaje));
 
