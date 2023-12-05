@@ -5,6 +5,7 @@ class DetallePedido implements IApiABM
     public $id;
     public $codigoPedido;
     public $idProducto;
+    public $cantidad;
     public $tiempoCalculado;
     public $estadoProducto;
     public $fechaCreacion;
@@ -16,9 +17,10 @@ class DetallePedido implements IApiABM
     public function crearUno()
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
-        $consulta = $objAccesoDatos->prepararConsulta("INSERT INTO detallepedido (codigoPedido, idProducto, tiempoCalculado, estadoProducto, fechaCreacion) VALUES (:codigoPedido, :idProducto, :tiempoCalculado, :estadoProducto, :fechaCreacion)");
+        $consulta = $objAccesoDatos->prepararConsulta("INSERT INTO detallepedido (codigoPedido, idProducto, cantidad, tiempoCalculado, estadoProducto, fechaCreacion) VALUES (:codigoPedido, :idProducto, :cantidad,  :tiempoCalculado, :estadoProducto, :fechaCreacion)");
         
         $consulta->bindValue(':codigoPedido', $this->codigoPedido, PDO::PARAM_STR);
+        $consulta->bindValue(':cantidad', $this->cantidad, PDO::PARAM_INT);
         $consulta->bindValue(':tiempoCalculado', $this->tiempoCalculado, PDO::PARAM_INT);
         $consulta->bindValue(':estadoProducto', "pendiente", PDO::PARAM_STR);
         $consulta->bindValue(':fechaCreacion', date('Y-m-d H:i:s'));
@@ -49,48 +51,6 @@ class DetallePedido implements IApiABM
     }
 
 
-    public static function modificarUno($id, $producto, $codigoPedido)
-    {
-        $mensaje = "";
-        $objAccesoDatos = AccesoDatos::obtenerInstancia();
-
-        $detallePedidoExistente = self::obtenerUno($id);
-        $pedido = Pedido::obtenerUno($codigoPedido);
-        $producto = Producto::obtenerUno($producto);
-        
-
-        if (!$detallePedidoExistente) {
-            $mensaje = "No existe el pedido";
-        }else if($producto ==null){
-            $mensaje = "No existe el producto que desea agregar al pedido";
-        }else if($pedido == null){
-            $mensaje = "No existe el pedido ingresado";
-        }
-        else {
-            
-            $consulta = $objAccesoDatos->prepararConsulta("UPDATE detallepedido SET idProducto = :idProducto, fechaModificacion = :fechaModificacion WHERE id = :id");
-            $consulta->bindValue(':idProducto', $producto->id, PDO::PARAM_INT);
-            $consulta->bindValue(':fechaModificacion', date('Y-m-d H:i:s'));
-            $consulta->bindValue(':id', $id, PDO::PARAM_INT);
-            $consulta->execute();
-            
-            $montoARestar = Producto::ObtenerPrecioProductoPorId($detallePedidoExistente->idProducto);
-            $objAccesoDatos = AccesoDatos::obtenerInstancia();
-            $consulta = $objAccesoDatos->prepararConsulta("UPDATE pedidos SET fechaModificacion = :fechaModificacion WHERE codigoPedido = :codigoPedido");
-            $consulta->bindValue(':fechaModificacion', date('Y-m-d H:i:s'));
-            $consulta->bindValue(':codigoPedido', $codigoPedido, PDO::PARAM_STR);
-            $consulta->execute();
-            
-            $montoASumar = Producto::ObtenerPrecioProductoPorId($producto->id);//sumo el nuevo producto
-            $mensaje = "Detalle de Pedido modificado.";
-            Pedido::SumaPrecio($detallePedidoExistente->id, ($montoARestar*-1));
-            Pedido::SumaPrecio($detallePedidoExistente->id, $montoASumar);
-
-        }
-
-        return $mensaje;
-    }
-    
 
     public static function borrarUno($id)
     {
@@ -122,7 +82,7 @@ class DetallePedido implements IApiABM
                 $consulta->bindValue(':codigoPedido', $pedido->codigoPedido, PDO::PARAM_STR);
                 $consulta->execute();
                 $mensaje = "Pedido cancelado.";
-                Pedido::SumaPrecio($pedido->id, ($monto*-1));//id de pedido
+                Pedido::SumaPrecio($pedido->id, ($monto*-1), 1);//id de pedido
             }
             
         }
@@ -133,8 +93,8 @@ class DetallePedido implements IApiABM
     public static function ListarPendientes($sector)
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
-        $consulta = $objAccesoDatos->prepararConsulta("SELECT id, codigoPedido, idProducto, tiempoCalculado, estadoProducto, fechaCreacion, fechaBaja, fechaModificacion
-        FROM detallepedido WHERE estadoProducto = 'pendiente' AND idProducto IN (SELECT id FROM productos WHERE sector = :sector)            
+        $consulta = $objAccesoDatos->prepararConsulta("SELECT detallepedido.id, detallepedido.codigoPedido, detallepedido.idProducto, productos.nombre, detallepedido.cantidad, detallepedido.tiempoCalculado, detallepedido.estadoProducto, detallepedido.fechaCreacion, detallepedido.fechaBaja, detallepedido.fechaModificacion
+        FROM detallepedido JOIN productos ON detallepedido.idProducto = productos.id WHERE estadoProducto = 'pendiente' AND idProducto IN (SELECT id FROM productos WHERE sector = :sector)            
         ");
 
         $consulta->bindValue(':sector', $sector, PDO::PARAM_STR);
@@ -143,20 +103,24 @@ class DetallePedido implements IApiABM
         return $consulta->fetchAll(PDO::FETCH_CLASS, 'DetallePedido');
     }
 
-    
-    public static function CambiarEstado($id, $estado)
+
+    public static function CambiarEstado($id, $estado, $tiempo)
     {
-        $existePedido = DetallePedido::obtenerUno($id);
+        $existePedido = self::obtenerUno($id);
 
         if ($existePedido != null) {
             $objAccesoDatos = AccesoDatos::obtenerInstancia();
-            $consulta = $objAccesoDatos->prepararConsulta("UPDATE detallepedido SET estadoProducto = :nuevoEstado, fechaModificacion = :fechaModificacion WHERE id = :id");
+            $consulta = $objAccesoDatos->prepararConsulta("UPDATE detallepedido SET estadoProducto = :nuevoEstado, tiempoCalculado = :nuevoTiempo, fechaModificacion = :fechaModificacion WHERE id = :id");
             $consulta->bindValue(':nuevoEstado', $estado, PDO::PARAM_STR);
+            $consulta->bindValue(':nuevoTiempo', $tiempo, PDO::PARAM_STR);
             $consulta->bindValue(':fechaModificacion', date('Y-m-d H:i:s'));
             $consulta->bindValue(':id', $id, PDO::PARAM_INT);
             $consulta->execute();
 
-            $mensaje = "Modificado";
+            $dp = DetallePedido::obtenerUno($id);
+            $idP = $dp->idProducto;
+            $prod = Producto::obtenerUnoPorId($idP);
+            $mensaje = "Estado del pedido: $existePedido->codigoPedido - Preparacion del producto: $prod->nombre modificado a $estado, tiempo de preparacion estimado: $tiempo";
         } else {
             $mensaje = "No existe el pedido seleccionado";
         }
@@ -164,7 +128,79 @@ class DetallePedido implements IApiABM
         return $mensaje;
     }
 
+    public static function CambiarEstadoListo($id)
+    {
+        $existeDetallePedido = self::obtenerUno($id);
+        $producto = Producto::obtenerUnoPorId($existeDetallePedido->idProducto);
+   
+
+
+        if ($existeDetallePedido != null) {
+            $objAccesoDatos = AccesoDatos::obtenerInstancia();
+            $nuevoEstado = 'listo para servir';
+
+            $consulta = $objAccesoDatos->prepararConsulta("UPDATE detallepedido SET estadoProducto = :nuevoEstado, fechaModificacion = :fechaModificacion WHERE id = :id");
+            $consulta->bindValue(':nuevoEstado', $nuevoEstado, PDO::PARAM_STR);
+            $consulta->bindValue(':fechaModificacion', date('Y-m-d H:i:s'));
+            $consulta->bindValue(':id', $id, PDO::PARAM_INT);
+            $consulta->execute();
+
+            $mensaje = "Estado del detalle pedido cod: $existeDetallePedido->codigoPedido - Producto $producto->nombre - $nuevoEstado";
+        } else {
+            $mensaje = "No existe el detalle pedido seleccionado";
+        }
+
+        return $mensaje;
+    }
+
+
+    public static function TodosFinalizadosEnPedido($codigoPedido)
+    {
+        $pedido = Pedido::obtenerUno($codigoPedido);
     
+        if (!$pedido) {
+            return "El pedido cod: $codigoPedido no existe.";
+        }
+    
+        $objAccesoDatos = AccesoDatos::obtenerInstancia();
+    
+
+        $consultaFinalizados = $objAccesoDatos->prepararConsulta("SELECT COUNT(*) FROM detallepedido WHERE codigoPedido = :codigoPedido AND estadoProducto = 'listo para servir'");
+        $consultaFinalizados->bindValue(':codigoPedido', $codigoPedido, PDO::PARAM_STR);
+        $consultaFinalizados->execute();
+        $totalFinalizados = $consultaFinalizados->fetchColumn();
+
+        $consultaTotalDetalles = $objAccesoDatos->prepararConsulta("SELECT COUNT(*) FROM detallepedido WHERE codigoPedido = :codigoPedido");
+        $consultaTotalDetalles->bindValue(':codigoPedido', $codigoPedido, PDO::PARAM_STR);
+        $consultaTotalDetalles->execute();
+        $totalDetalles = $consultaTotalDetalles->fetchColumn();
+    
+        if ($totalFinalizados === $totalDetalles) {
+            $idPedido = $pedido['id'];
+            $codigoMesa = $pedido['codigoMesa'];
+            $idMesa = Mesa::ObtenerIdPorCodigoDeMesa($codigoMesa);
+            Mesa::CambiarEstadoMesa($idMesa, 2);
+            Pedido::CambiarEstadoPedido($idPedido, 2);
+
+            return "Pedido cod: $codigoPedido servido en mesa cod: $codigoMesa.";
+        } else {
+            return "Los productos pertenecientes al pedido numero $codigoPedido no se encuentran listos.";
+        }
+    }
+    
+
+    public static function finalizarDetallePedidos($codigoPedido)
+    {
+        $objAccesoDatos = AccesoDatos::obtenerInstancia();
+        
+        $consulta = $objAccesoDatos->prepararConsulta("UPDATE detallepedido SET estadoProducto = 'finalizado', fechaModificacion = :fechaModificacion WHERE codigoPedido = :codigoPedido AND estadoProducto = 'listo para servir'");
+        
+        $consulta->bindValue(':fechaModificacion', date('Y-m-d H:i:s'));
+        $consulta->bindValue(':codigoPedido', $codigoPedido, PDO::PARAM_STR);
+        $consulta->execute();
+
+        //return "Detalles del pedido cod: $codigoPedido finalizados correctamente.";
+    }
 
 
 }

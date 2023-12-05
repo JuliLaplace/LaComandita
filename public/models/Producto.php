@@ -6,7 +6,6 @@ class Producto implements IApiABM
     public $nombre;
     public $precio;
     public $sector;
-    public $tiempopreparacion;
     public $fechaCreacion;
     public $fechaBaja;
     public $fechaModificacion;
@@ -17,11 +16,10 @@ class Producto implements IApiABM
     public function crearUno()
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
-        $consulta = $objAccesoDatos->prepararConsulta("INSERT INTO productos (nombre, precio, sector, tiempopreparacion, fechaCreacion) VALUES (:nombre, :precio, :sector, :tiempopreparacion, :fechaCreacion)");
+        $consulta = $objAccesoDatos->prepararConsulta("INSERT INTO productos (nombre, precio, sector, fechaCreacion) VALUES (:nombre, :precio, :sector, :fechaCreacion)");
         $consulta->bindValue(':sector', $this->sector, PDO::PARAM_STR);
         $consulta->bindValue(':nombre', $this->nombre, PDO::PARAM_STR);
         $consulta->bindValue(':precio', $this->precio, PDO::PARAM_STR);
-        $consulta->bindValue(':tiempopreparacion', $this->tiempopreparacion, PDO::PARAM_STR);
         $consulta->bindValue(':fechaCreacion', date('Y-m-d H:i:s'));
 
         $consulta->execute();
@@ -32,7 +30,7 @@ class Producto implements IApiABM
     public static function obtenerTodos()
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
-        $consulta = $objAccesoDatos->prepararConsulta("SELECT productos.id, productos.nombre, productos.precio, productos.tiempopreparacion, sector.sector, productos.fechaCreacion, productos.fechaBaja, productos.fechaModificacion FROM productos JOIN sector ON productos.sector = sector.id WHERE productos.fechaBaja IS NULL");
+        $consulta = $objAccesoDatos->prepararConsulta("SELECT productos.id, productos.nombre, productos.precio, sector.sector, productos.fechaCreacion, productos.fechaBaja, productos.fechaModificacion FROM productos JOIN sector ON productos.sector = sector.id WHERE productos.fechaBaja IS NULL");
         $consulta->execute();
 
         return $consulta->fetchAll(PDO::FETCH_CLASS, 'Producto');
@@ -41,8 +39,18 @@ class Producto implements IApiABM
     public static function obtenerUno($nombre)
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
-        $consulta = $objAccesoDatos->prepararConsulta("SELECT productos.id, productos.nombre, productos.precio, productos.tiempopreparacion, sector.sector, productos.fechaCreacion, productos.fechaBaja, productos.fechaModificacion  FROM productos JOIN sector ON productos.sector = sector.id WHERE nombre = :nombre AND productos.fechaBaja IS NULL");
+        $consulta = $objAccesoDatos->prepararConsulta("SELECT productos.id, productos.nombre, productos.precio, sector.sector, productos.fechaCreacion, productos.fechaBaja, productos.fechaModificacion  FROM productos JOIN sector ON productos.sector = sector.id WHERE nombre = :nombre AND productos.fechaBaja IS NULL");
         $consulta->bindValue(':nombre', $nombre, PDO::PARAM_STR);
+        $consulta->execute();
+
+        return $consulta->fetchObject('Producto');
+    }
+    
+    public static function obtenerUnoPorId($idP)
+    {
+        $objAccesoDatos = AccesoDatos::obtenerInstancia();
+        $consulta = $objAccesoDatos->prepararConsulta("SELECT productos.id, productos.nombre, productos.precio, sector.sector, productos.fechaCreacion, productos.fechaBaja, productos.fechaModificacion  FROM productos JOIN sector ON productos.sector = sector.id WHERE productos.id = :id AND productos.fechaBaja IS NULL");
+        $consulta->bindValue(':id', $idP, PDO::PARAM_STR);
         $consulta->execute();
 
         return $consulta->fetchObject('Producto');
@@ -78,21 +86,6 @@ class Producto implements IApiABM
         return $precio;
     }
 
-    public static function ObtenerTiempoPreparacion($id)
-    {
-        $listaProductos = self::obtenerTodos();
-        $tiempo = -1;
-
-
-        foreach ($listaProductos as $item) {
-            if ($item->id == $id) {
-                $tiempo = $item->tiempopreparacion;
-                break;
-            }
-        }
-
-        return $tiempo;
-    }
 
     public static function borrarUno($producto)
     {
@@ -122,7 +115,7 @@ class Producto implements IApiABM
        
     }
 
-    public static function modificarUno($nombre, $precio, $tiempo)
+    public static function modificarUno($nombre, $precio)
     {
         $mensaje = "";
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
@@ -130,10 +123,9 @@ class Producto implements IApiABM
         if (!$productoExistente) {
             $mensaje = "No existe el producto";
         } else {
-            $consulta = $objAccesoDatos->prepararConsulta("UPDATE productos SET precio = :precio, tiempopreparacion = :tiempo, fechaModificacion = :fechaModificacion WHERE nombre = :nombre");
+            $consulta = $objAccesoDatos->prepararConsulta("UPDATE productos SET precio = :precio, fechaModificacion = :fechaModificacion WHERE nombre = :nombre");
             $consulta->bindValue(':nombre', $nombre, PDO::PARAM_STR);
             $consulta->bindValue(':precio', $precio, PDO::PARAM_STR);
-            $consulta->bindValue(':tiempo', $tiempo, PDO::PARAM_STR);
             $consulta->bindValue(':fechaModificacion', date('Y-m-d H:i:s'));
             
             $consulta->execute();
@@ -141,6 +133,29 @@ class Producto implements IApiABM
         }
 
         return $mensaje;
+    }
+
+    public static function CargarCSV($archivo)
+    {
+        $array = ArchivosCSV::LeerCsv($archivo);
+      
+        for($i = 0; $i < sizeof($array); $i++)
+        {             
+            $campos = explode(",", $array[$i]);               
+            
+            $producto = new Producto();
+            $producto->id = $campos[0];
+            $producto->nombre = $campos[1];
+            $producto->precio = $campos[2];
+            $producto->sector = $campos[3];
+            $producto->fechaCreacion = $campos[4];
+            $producto->fechaBaja = $campos[5];
+            $producto->fechaModificacion = $campos[6];
+    
+            
+            $producto->crearUno();
+
+        }
     }
 
     

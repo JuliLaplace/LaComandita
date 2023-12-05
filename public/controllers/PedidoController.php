@@ -1,6 +1,7 @@
 <?php
 require_once("./models/Pedido.php");
 require_once("./models/Mesa.php");
+require_once("./models/DetallePedido.php");
 require_once './interfaces/IApiController.php';
 
 class PedidoController implements IApiController
@@ -12,44 +13,46 @@ class PedidoController implements IApiController
 
         $codigoPedido = $parametros['codigoPedido'];
         $codigoMesa = $parametros['codigoMesa'];
-        $idEmpleado = $parametros['idEmpleado'];
         $idCliente = $parametros['idCliente'];
         $fecha = date("Y-m-d H:i:s");
-
-
+        //aca
+        /*
+        $usuario = $request->getAttribute('usuario');
+        $empleado = Empleado::obtenerUno($usuario);*/
+        $header = $request->getHeaderLine('Authorization');
+        $token = trim(explode("Bearer", $header)[1]);
+        $data = AutentificadorJWT::ObtenerData($token);
+        $usuario = $data->usuario;
+        $empleado = Empleado::obtenerUno($usuario);
 
 
 
         $idMesa = Mesa::ObtenerIdPorCodigoDeMesa($codigoMesa);
-        //var_dump(Mesa::VerificarEstadoMesa($idMesa));
 
         if ($idMesa != -1) {
-            //var_dump(Mesa::VerificarEstadoMesa($idMesa));
             if (Mesa::VerificarEstadoMesa($idMesa) == "cerrada") //si la mesa esta cerrada sin clientes
             {
-                if ($idEmpleado != -1) {
+
                     if ($idCliente != -1) {
                         $pedido = new Pedido();
                         $pedido->codigoPedido = $codigoPedido;
-                        $pedido->codigoMesa = $codigoMesa;
-                        $pedido->idEmpleado =  $idEmpleado;
+                        $pedido->codigoMesa = $codigoMesa;                        
+                        $pedido->idEmpleado =  $empleado->id;
                         $pedido->idCliente = $idCliente;
-                        $pedido->fecha = $fecha;
-                        $pedido->precio_final = 0;
-                        $pedido->estado = 1; //estado en proceso
+                        $pedido->precioFinal = 0;
+                        $pedido->estado = 4; //estado iniciado
 
 
                         Mesa::CambiarEstadoMesa($idMesa, 1); //estado de mesa tiene que cambiar a "cliente esperando pedido"
 
-                        $pedido->crearUno();
+                        $respuesta = $pedido->crearUno();
 
-                        $payload = json_encode(array("mensaje" => "Pedido creado con exito"));
+
+                        $payload = json_encode(array("mensaje" => "Pedido creado con exito - Codigo: $codigoPedido - Mozo: $usuario -  Ahora ingrese los productos que desee"));
                     } else {
                         $payload = json_encode(array("mensaje" => "El id del cliente no existe."));
                     }
-                } else {
-                    $payload = json_encode(array("mensaje" => "El id de empleado no existe."));
-                }
+ 
             } else {
                 $payload = json_encode(array("mensaje" => "La mesa seleccionada se encuentra ocupada."));
             }
@@ -84,7 +87,7 @@ class PedidoController implements IApiController
         if (!$ped) {
             $payload = json_encode(array("mensaje" => "El pedido no existe"));
         } else {
-            $payload = json_encode($ped);
+            $payload = json_encode(array("Pedido seleccionado" => $ped));
         }
 
         $response->getBody()->write($payload);
@@ -123,19 +126,91 @@ class PedidoController implements IApiController
 
     public function CargarFoto($request, $response, $args)
     {
-        $parametros = $request->getParsedBody();
+            $parametros = $request->getParsedBody();
 
-        $codigo = $parametros['codigo'];
-        $foto = $_FILES['foto'];
+            $codigo = $parametros['codigoPedido'];
+            $foto = $_FILES['foto'];
+
+            $pedido = Pedido::obtenerUno($codigo);
+            if ($pedido != null) {
+                $id = $pedido['id'];
+                $codigoPedido = $pedido['codigoPedido'];
+                //$nombreFoto = $pedido->id . "-" . $pedido->codigoPedido;
+                $nombreFoto = $id . "-" . $codigoPedido;
+                if (Pedido::GuardarImagen($foto, $nombreFoto, $codigo)) {
+
+                    $mensaje = "Foto de pedido N° $codigoPedido guardada";
+                } else {
+                    $mensaje = "Error en cargar la foto";
+                }
+            } else {
+                $mensaje = "El pedido seleccionado no existe";
+            }
+
+            $payload = json_encode(array("mensaje" => $mensaje));
+
+            $response->getBody()->write($payload);
+            return $response
+                ->withHeader('Content-Type', 'application/json');
+    }
+    
+
+    public function TraerTiempoDemora($request, $response, $args)
+    {
+        $parametros = $request->getParsedBody();
+        $codigo = $parametros['codigoPedido'];
+
+        $pedido = Pedido::obtenerUno($codigo);
+
+        if ($pedido) {
+            $tiempoDemora = Pedido::TraerTiempoDemora($codigo);
+            
+
+            if ($tiempoDemora !== null) {  
+                $horaActual = new DateTime();
+                $tiempoDemora = DateTime::createFromFormat('H:i:s', $tiempoDemora);
+
+                // Calcular la diferencia en minutos
+                $interval = $horaActual->diff($tiempoDemora);
+
+                // Obtener la diferencia en minutos
+                $diferenciaEnMinutos = $interval->format('%r%i');
+
+                if ($interval->invert) {
+                    $dif = abs($diferenciaEnMinutos);
+                    $mensaje = "El pedido ha pasado el tiempo de espera por $dif minutos";
+                } else {
+                    $mensaje = "El tiempo de demora del pedido Numero $codigo es de $diferenciaEnMinutos minutos";
+                }
+            } else {
+                $mensaje = "Todavia no se adjudico un tiempo de demora al pedido cod: $codigo";
+            }
+
+            $payload = json_encode(array("mensaje" => $mensaje));
+        } else {
+            $payload = json_encode(array("mensaje" => "El pedido con código N° $codigo no existe"));
+        }
+
+        $response->getBody()->write($payload);
+        return $response->withHeader('Content-Type', 'application/json');
+    }
+
+
+    public function ServirPedido($request, $response, $args)
+    {
+        $codigo = $args['codigo'];
 
         $pedido = Pedido::obtenerUno($codigo);
         if ($pedido != null) {
-            $nombreFoto = $pedido->id . "-" . $pedido->codigoPedido;
-            if (Pedido::GuardarImagen($foto, $nombreFoto, $codigo)) {
-
-                $mensaje = "Foto guardada";
-            } else {
-                $mensaje = "Error en cargar la foto";
+            $retorno = DetallePedido::TodosFinalizadosEnPedido($codigo);
+            if($retorno){
+                $idMesa = Mesa::ObtenerIdPorCodigoDeMesa($pedido->codigoMesa);
+                Mesa::CambiarEstadoMesa($idMesa, 2); //cambio estado a mesa con cliente comiendo
+                Pedido::CambiarEstadoPedido($pedido->id, 2);
+                $mensaje = "Pedido servido";
+            }
+            else{
+                $mensaje = "No se puede entregar el pedido - Todavia hay pedidos sin terminar";
             }
         } else {
             $mensaje = "El pedido seleccionado no existe";
@@ -147,4 +222,33 @@ class PedidoController implements IApiController
         return $response
             ->withHeader('Content-Type', 'application/json');
     }
+
+    public function PagarPedido($request, $response, $args)
+    {
+        $parametros = $request->getParsedBody();
+        $codigo = $parametros['codigoPedido'];
+
+        $pedido = Pedido::obtenerUno($codigo);
+
+        if ($pedido != null && $pedido['estado'] == "finalizado") {
+            $idMesa = Mesa::ObtenerIdPorCodigoDeMesa($pedido['codigoMesa']);
+            Mesa::CambiarEstadoMesa($idMesa, 3); //cambio estado a mesa con cliente pagando
+            DetallePedido::finalizarDetallePedidos($codigo);
+            $precio = Pedido::CobrarCuenta($codigo); //busco el precio
+            $mensaje = "Pedido cod: $codigo - precio total a pagar: $precio - Cliente pagando";
+            
+        } else if($pedido != null && $pedido['estado'] != "finalizado"){
+            $mensaje = "El pedido seleccionado no pidio la cuenta - Pedido todavia en proceso/comiendo";
+        }else{
+            $mensaje = "El pedido seleccionado no existe";
+        }
+
+        $payload = json_encode(array("mensaje" => $mensaje));
+
+        $response->getBody()->write($payload);
+        return $response
+            ->withHeader('Content-Type', 'application/json');
+    }
+
+    
 }

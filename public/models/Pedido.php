@@ -29,7 +29,7 @@ class Pedido implements IApiABM
         $consulta->bindValue(':idCliente', $this->idCliente, PDO::PARAM_INT);
         $consulta->bindValue(':fechaCreacion', date('Y-m-d H:i:s'));
         $consulta->bindValue(':precioFinal', 0, PDO::PARAM_STR);
-        $consulta->bindValue(':estado', 1, PDO::PARAM_INT);
+        $consulta->bindValue(':estado', 4, PDO::PARAM_INT);
 
         $consulta->execute();
     }
@@ -38,13 +38,19 @@ class Pedido implements IApiABM
     public static function obtenerTodos()
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
-        $consulta = $objAccesoDatos->prepararConsulta("SELECT id, codigoPedido, idCliente, codigoMesa, idEmpleado, fechaCreacion,fechaBaja,fechaModificacion, precioFinal, estado, tiempoEstimado FROM pedidos WHERE fechaBaja IS NULL;");
-        $consulta->execute();
-        $pedidos = $consulta->fetchAll(PDO::FETCH_CLASS, 'Pedido');
+        $consulta = $objAccesoDatos->prepararConsulta("SELECT pedidos.id, pedidos.codigoPedido, clientes.nombre as nombreCliente, pedidos.codigoMesa, empleados.nombre as nombreEmpleado, pedidos.fechaCreacion, pedidos.fechaBaja, pedidos.fechaModificacion, pedidos.precioFinal, estadopedido.estado as estado, pedidos.tiempoEstimado 
+            FROM pedidos 
+            LEFT JOIN empleados ON pedidos.idEmpleado = empleados.id 
+            LEFT JOIN clientes ON pedidos.idCliente = clientes.id 
+            LEFT JOIN estadopedido ON pedidos.estado = estadopedido.id
+            WHERE pedidos.fechaBaja IS NULL");
 
-        foreach ($pedidos as $item) {
-            $detalles = self::obtenerDetalles($item->codigoPedido);
-            $item->detalles = $detalles;
+        $consulta->execute();
+        $pedidos = $consulta->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach ($pedidos as &$pedido) {
+            $detalles = self::obtenerDetalles($pedido['codigoPedido']);
+            $pedido['detalles'] = $detalles;
         }
 
         return $pedidos;
@@ -62,19 +68,26 @@ class Pedido implements IApiABM
     public static function obtenerUno($codigo)
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
-        $consulta = $objAccesoDatos->prepararConsulta("SELECT id, codigoPedido, idCliente, codigoMesa, idEmpleado, fechaCreacion, fechaBaja, fechaModificacion, precioFinal, estado, tiempoEstimado FROM pedidos WHERE codigoPedido = :codigo AND fechaBaja IS NULL");
+        $consulta = $objAccesoDatos->prepararConsulta("SELECT pedidos.id, pedidos.codigoPedido, clientes.nombre as nombreCliente, pedidos.codigoMesa, empleados.nombre as nombreEmpleado, pedidos.fechaCreacion, pedidos.fechaBaja, pedidos.fechaModificacion, pedidos.precioFinal, estadopedido.estado as estado, pedidos.tiempoEstimado 
+            FROM pedidos 
+            LEFT JOIN empleados ON pedidos.idEmpleado = empleados.id 
+            LEFT JOIN clientes ON pedidos.idCliente = clientes.id 
+            LEFT JOIN estadopedido ON pedidos.estado = estadopedido.id
+            WHERE pedidos.codigoPedido = :codigo AND pedidos.fechaBaja IS NULL");
+    
         $consulta->bindValue(':codigo', $codigo, PDO::PARAM_STR);
         $consulta->execute();
-
-        $pedido = $consulta->fetchObject('Pedido');
-
+    
+        $pedido = $consulta->fetch(PDO::FETCH_ASSOC);
+    
         if ($pedido) {
-
             $detalles = self::obtenerDetalles($codigo);
-            $pedido->detalles = $detalles;
+            $pedido['detalles'] = $detalles;
         }
+    
         return $pedido;
     }
+ 
 
     public static function ExisteCodigoPedido($codigo)
     {
@@ -95,8 +108,8 @@ class Pedido implements IApiABM
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
 
-        $consulta = $objAccesoDatos->prepararConsulta("UPDATE pedidos SET precioFinal = precioFinal + :monto WHERE id = :id");
 
+        $consulta = $objAccesoDatos->prepararConsulta("UPDATE pedidos SET precioFinal = precioFinal + :monto WHERE id = :id");
         $consulta->bindValue(':id', $id, PDO::PARAM_INT);
         $consulta->bindValue(':monto', $monto, PDO::PARAM_STR);
 
@@ -105,25 +118,23 @@ class Pedido implements IApiABM
         return $consulta->rowCount();//devuelve la cantidad de filas afectadas sie s 0 no se modifico
     }
 
-    public static function SetearTiempoEstimado($codigoPedido)
-    {
-        $objAccesoDatos = AccesoDatos::obtenerInstancia();
+   
+    public static function SetearTiempoEstimado($codigoPedido, $tiempo)
+{
+    $objAccesoDatos = AccesoDatos::obtenerInstancia();
 
-        $consultaDetalles = $objAccesoDatos->prepararConsulta("SELECT MAX(tiempoCalculado) AS maxTiempo FROM detallepedido WHERE codigoPedido = :codigoPedido");
-        $consultaDetalles->bindValue(':codigoPedido', $codigoPedido, PDO::PARAM_INT);
-        $consultaDetalles->execute();
-        
-        $tiempoMaximo = $consultaDetalles->fetch(PDO::FETCH_ASSOC)['maxTiempo'];
+    $consultaPedidoActual = $objAccesoDatos->prepararConsulta("SELECT tiempoEstimado FROM pedidos WHERE codigoPedido = :codigoPedido AND fechaBaja IS NULL");
+    $consultaPedidoActual->bindValue(':codigoPedido', $codigoPedido, PDO::PARAM_INT);
+    $consultaPedidoActual->execute();  
+    $tiempoEstimadoActual = $consultaPedidoActual->fetch(PDO::FETCH_ASSOC)['tiempoEstimado'];
 
+    if ($tiempoEstimadoActual === null || $tiempo > $tiempoEstimadoActual) {
         $consultaPedido = $objAccesoDatos->prepararConsulta("UPDATE pedidos SET tiempoEstimado = :tiempoEstimado WHERE codigoPedido = :codigoPedido AND fechaBaja IS NULL");
         $consultaPedido->bindValue(':codigoPedido', $codigoPedido, PDO::PARAM_INT);
-        $consultaPedido->bindValue(':tiempoEstimado', $tiempoMaximo, PDO::PARAM_STR);
+        $consultaPedido->bindValue(':tiempoEstimado', $tiempo, PDO::PARAM_STR);
         $consultaPedido->execute();
-    
-        return $consultaPedido->rowCount(); //devuelve la cantidad de filas afectadas sie s 0 no se modifico
     }
-    
-    
+}
     
     public static function modificarUno($codigoPedido, $codigoMesa)
     {
@@ -208,5 +219,53 @@ class Pedido implements IApiABM
     
         return $retorno;
     }
+
+    public static function CambiarEstadoPedido($id, $estado)
+    {
+        $objAccesoDatos = AccesoDatos::obtenerInstancia();
+
+        $consulta = $objAccesoDatos->prepararConsulta("UPDATE pedidos SET estado = :estado WHERE id = :id");
+
+        $consulta->bindValue(':id', $id, PDO::PARAM_INT);
+        $consulta->bindValue(':estado', $estado, PDO::PARAM_INT);
+
+        $consulta->execute();
+
+        return $consulta->rowCount();
+    }
+
+    public static function TraerTiempoDemora($codigoPedido)
+    {
+        $objAccesoDatos = AccesoDatos::obtenerInstancia();
+
+
+        $consultaDemora = $objAccesoDatos->prepararConsulta("SELECT ADDTIME(TIME(fechaCreacion), tiempoEstimado) AS sumaFechaYTiempo FROM pedidos WHERE codigoPedido = :codigoPedido AND fechaBaja IS NULL");
+        
+        $consultaDemora->bindValue(':codigoPedido', $codigoPedido, PDO::PARAM_STR);
+        $consultaDemora->execute();
+
+
+        $sumaFechaYTiempo = $consultaDemora->fetch(PDO::FETCH_ASSOC);
+
+
+        return $sumaFechaYTiempo !== false ? $sumaFechaYTiempo['sumaFechaYTiempo'] : null; //devuelve null si no existe
+    }
+
+    public static function CobrarCuenta($codigoPedido)
+    {
+        $objAccesoDatos = AccesoDatos::obtenerInstancia();
+
+        $consulta = $objAccesoDatos->prepararConsulta("SELECT precioFinal FROM pedidos WHERE codigoPedido = :codigoPedido AND fechaBaja IS NULL");
+
+        $consulta->bindValue(':codigoPedido', $codigoPedido, PDO::PARAM_STR);
+        $consulta->execute();
+
+        $precioFinal = $consulta->fetchColumn();
+
+
+        return $precioFinal !== false ? $precioFinal : null; //o dan el precio o dan null
+    }
+
+
 
 }

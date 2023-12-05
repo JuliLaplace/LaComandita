@@ -15,7 +15,12 @@ class AuthMiddleware
 
         try {
             AutentificadorJWT::VerificarToken($token);
+            $data = AutentificadorJWT::ObtenerData($token);
+            $usuario = $data->usuario;
+ 
+            //$request = $request->withAttribute('usuario', $usuario);
             $response = $handler->handle($request);
+
         } catch (Exception $e) {
             $response = new Response();
             $payload = json_encode(array('mensaje' => 'ERROR: Hubo un error con el TOKEN'));
@@ -63,7 +68,7 @@ class AuthMiddleware
             AutentificadorJWT::VerificarToken($token);
             $data = AutentificadorJWT::ObtenerData($token);
 
-            if ($data->sector == '4') {
+            if ($data->sector == '4' || $data->sector == '6') {
                 $request = $request->withAttribute('sector', $data->sector); //le paso un atributo para obetenr el sector
                 $response = $handler->handle($request);
                
@@ -94,7 +99,7 @@ class AuthMiddleware
             AutentificadorJWT::VerificarToken($token);
             $data = AutentificadorJWT::ObtenerData($token);
 
-            if ($data->sector == '3') {
+            if ($data->sector == '3' || $data->sector == '6') {
                 $request = $request->withAttribute('sector', $data->sector); //le paso un atributo para obetenr el sector
                 $response = $handler->handle($request);
                
@@ -125,7 +130,7 @@ class AuthMiddleware
             AutentificadorJWT::VerificarToken($token);
             $data = AutentificadorJWT::ObtenerData($token);
 
-            if ($data->sector == '2') {
+            if ($data->sector == '2' || $data->sector == '6') {
                 $request = $request->withAttribute('sector', $data->sector); //le paso un atributo para obetenr el sector
                 $response = $handler->handle($request);
                
@@ -155,7 +160,7 @@ class AuthMiddleware
             AutentificadorJWT::VerificarToken($token);
             $data = AutentificadorJWT::ObtenerData($token);
 
-            if ($data->sector == '1') {
+            if ($data->sector == '1' || $data->sector == '6') {
                 $request = $request->withAttribute('sector', $data->sector); //le paso un atributo para obetenr el sector
                 $response = $handler->handle($request);
                
@@ -186,6 +191,36 @@ class AuthMiddleware
             AutentificadorJWT::VerificarToken($token);
             $data = AutentificadorJWT::ObtenerData($token);
 
+            if ($data->sector == '5' || $data->sector == '6') {
+                $request = $request->withAttribute('sector', $data->sector); //le paso un atributo para obetenr el sector
+                $response = $handler->handle($request);
+               
+            } else {
+
+                $response = new Response();
+                $payload = json_encode(array("mensaje" => "No sos Mozo"));
+                $response->getBody()->write($payload);
+            }
+
+
+
+        } catch (Exception $e) {
+            $response = new Response();
+            $payload = json_encode(array('mensaje' => 'ERROR: Hubo un error con el TOKEN'));
+            $response->getBody()->write($payload);
+        }
+        return $response->withHeader('Content-Type', 'application/json');
+    }
+    public function ValidarSoloMozo($request, $handler): Response
+    {
+       
+        $header = $request->getHeaderLine('Authorization');
+        $token = trim(explode("Bearer", $header)[1]);
+
+        try {
+            AutentificadorJWT::VerificarToken($token);
+            $data = AutentificadorJWT::ObtenerData($token);
+
             if ($data->sector == '5') {
                 $request = $request->withAttribute('sector', $data->sector); //le paso un atributo para obetenr el sector
                 $response = $handler->handle($request);
@@ -206,7 +241,38 @@ class AuthMiddleware
         }
         return $response->withHeader('Content-Type', 'application/json');
     }
+/*
+    public function ValidarMozoSocio($request, $handler): Response
+    {
+       
+        $header = $request->getHeaderLine('Authorization');
+        $token = trim(explode("Bearer", $header)[1]);
 
+        try {
+            AutentificadorJWT::VerificarToken($token);
+            $data = AutentificadorJWT::ObtenerData($token);
+
+            if ($data->sector == '5' || $data->sector == '6') {
+                $request = $request->withAttribute('sector', $data->sector); //le paso un atributo para obetenr el sector
+                $response = $handler->handle($request);
+               
+            } else {
+
+                $response = new Response();
+                $payload = json_encode(array("mensaje" => "No sos un usuario valido para esta accion"));
+                $response->getBody()->write($payload);
+            }
+
+
+
+        } catch (Exception $e) {
+            $response = new Response();
+            $payload = json_encode(array('mensaje' => 'ERROR: Hubo un error con el TOKEN'));
+            $response->getBody()->write($payload);
+        }
+        return $response->withHeader('Content-Type', 'application/json');
+    }
+*/
 
 }
 

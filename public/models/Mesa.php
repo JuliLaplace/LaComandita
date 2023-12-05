@@ -95,7 +95,7 @@ class Mesa implements IApiABM{
             $consulta->bindValue(':fechaModificacion', date('Y-m-d H:i:s'));
 
             $consulta->execute();
-            $mensaje = "Mesa modificada.";
+            $mensaje = "Mesa con codigo: $codigo modificada.";
         }
 
         return $mensaje;
@@ -149,6 +149,31 @@ class Mesa implements IApiABM{
 
         return $consulta->rowCount();
     }
+////
+    public static function obtenerListadoMesasConEstado()
+    {
+        $objAccesoDatos = AccesoDatos::obtenerInstancia();
+        $consulta = $objAccesoDatos->prepararConsulta("SELECT mesas.id, mesas.codigoMesa, estadomesa.estado as estadoMesa FROM mesas JOIN estadomesa ON mesas.estado = estadomesa.id WHERE mesas.fechaBaja IS NULL");
+
+        $consulta->execute();
+
+        return $consulta->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
+    public static function obtenerMesaMasUsada()
+    {
+        $objAccesoDatos = AccesoDatos::obtenerInstancia();
+
+        $consulta = $objAccesoDatos->prepararConsulta("SELECT codigoMesa, COUNT(codigoMesa) as cantidad FROM pedidos GROUP BY codigoMesa ORDER BY cantidad DESC LIMIT 1");
+        $consulta->execute();
+
+        $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
+
+        return $resultado;
+    }
+
+
 
 
 

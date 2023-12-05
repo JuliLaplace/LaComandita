@@ -1,0 +1,1017 @@
+{
+	"info": {
+		"_postman_id": "06bf8bb7-1fae-41a7-85ba-780c357c37b5",
+		"name": "tp-Paso a Paso comandita",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29666411"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"item": [
+				{
+					"name": "Login Socio Julix",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "usuario",
+									"value": "Julix404",
+									"type": "text"
+								},
+								{
+									"key": "clave",
+									"value": "michis",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:666/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "666",
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Mozo Effy",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "usuario",
+									"value": "Effyciana",
+									"type": "text"
+								},
+								{
+									"key": "clave",
+									"value": "sobrecitos",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:666/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "666",
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Cervecero Morty",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "usuario",
+									"value": "MortyMan",
+									"type": "text"
+								},
+								{
+									"key": "clave",
+									"value": "whiskas",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:666/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "666",
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Bartender Rick",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "usuario",
+									"value": "RickSanchez",
+									"type": "text"
+								},
+								{
+									"key": "clave",
+									"value": "portal",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:666/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "666",
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Cocinero Beth",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "usuario",
+									"value": "BethSanchez",
+									"type": "text"
+								},
+								{
+									"key": "clave",
+									"value": "vino",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:666/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "666",
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Candybar Summer",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "usuario",
+									"value": "SummerSmith",
+									"type": "text"
+								},
+								{
+									"key": "clave",
+									"value": "telefono",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:666/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "666",
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Paso 1 - Agregar Pedido",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDE4MDM5NzQsImV4cCI6MTcwMTg2Mzk3NCwiYXVkIjoiYjQ4NGQ3ZTJlZjljYWRhYzE1OThkNjk3NGQ2YTA1ZDQyZGYzNDZmNyIsImRhdGEiOnsidXN1YXJpbyI6IkVmZnljaWFuYSIsInNlY3RvciI6NX0sImFwcCI6IlRlc3QgSldUIn0.AH5R86VMj4AJqB7APVwIMHa4K6Le3AuXZLMcX4CWhSE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "codigoPedido",
+							"value": "p1",
+							"type": "text"
+						},
+						{
+							"key": "codigoMesa",
+							"value": "mesa1",
+							"type": "text"
+						},
+						{
+							"key": "idCliente",
+							"value": "1001",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:666/pedidos/pedir",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "666",
+					"path": [
+						"pedidos",
+						"pedir"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Paso 1 - Cargar Pedidos",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDE4MDM5NzQsImV4cCI6MTcwMTg2Mzk3NCwiYXVkIjoiYjQ4NGQ3ZTJlZjljYWRhYzE1OThkNjk3NGQ2YTA1ZDQyZGYzNDZmNyIsImRhdGEiOnsidXN1YXJpbyI6IkVmZnljaWFuYSIsInNlY3RvciI6NX0sImFwcCI6IlRlc3QgSldUIn0.AH5R86VMj4AJqB7APVwIMHa4K6Le3AuXZLMcX4CWhSE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "codigopedido",
+							"value": "p1",
+							"type": "text"
+						},
+						{
+							"key": "producto",
+							"value": "hamburguesa de garbanzo",
+							"type": "text"
+						},
+						{
+							"key": "cantidad",
+							"value": "2",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:666/pedidos/pedido",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "666",
+					"path": [
+						"pedidos",
+						"pedido"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Paso 2 - Guardar Foto Mozo",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDE4MDM5NzQsImV4cCI6MTcwMTg2Mzk3NCwiYXVkIjoiYjQ4NGQ3ZTJlZjljYWRhYzE1OThkNjk3NGQ2YTA1ZDQyZGYzNDZmNyIsImRhdGEiOnsidXN1YXJpbyI6IkVmZnljaWFuYSIsInNlY3RvciI6NX0sImFwcCI6IlRlc3QgSldUIn0.AH5R86VMj4AJqB7APVwIMHa4K6Le3AuXZLMcX4CWhSE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "codigoPedido",
+							"value": "p1",
+							"type": "text"
+						},
+						{
+							"key": "foto",
+							"type": "file",
+							"src": "/C:/Users/Usuario/Desktop/images.jpg"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:666/pedidos/foto",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "666",
+					"path": [
+						"pedidos",
+						"foto"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Paso 3 - Listar Pendientes Bar",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDE4MDU1MDQsImV4cCI6MTcwMTg2NTUwNCwiYXVkIjoiYjQ4NGQ3ZTJlZjljYWRhYzE1OThkNjk3NGQ2YTA1ZDQyZGYzNDZmNyIsImRhdGEiOnsidXN1YXJpbyI6IlJpY2tTYW5jaGV6Iiwic2VjdG9yIjozfSwiYXBwIjoiVGVzdCBKV1QifQ.IuVrlLTrZ-5ELJqMcklZNGn2HjMuIZ1ZKji2C2thhXA",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:666/pedidos/detalles/listar/bar",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "666",
+					"path": [
+						"pedidos",
+						"detalles",
+						"listar",
+						"bar"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Paso 3 - Listar Pendientes Cocina",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDE4MDU2OTgsImV4cCI6MTcwMTg2NTY5OCwiYXVkIjoiYjQ4NGQ3ZTJlZjljYWRhYzE1OThkNjk3NGQ2YTA1ZDQyZGYzNDZmNyIsImRhdGEiOnsidXN1YXJpbyI6IkJldGhTYW5jaGV6Iiwic2VjdG9yIjoyfSwiYXBwIjoiVGVzdCBKV1QifQ.n5TBw-rzttxEIbQgu-fWOEZ9MgxIEDQVtTUkh8fuKIQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:666/pedidos/detalles/listar/cocina",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "666",
+					"path": [
+						"pedidos",
+						"detalles",
+						"listar",
+						"cocina"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Paso 3 - Listar Pendientes Candy",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDE4MDU3NjQsImV4cCI6MTcwMTg2NTc2NCwiYXVkIjoiYjQ4NGQ3ZTJlZjljYWRhYzE1OThkNjk3NGQ2YTA1ZDQyZGYzNDZmNyIsImRhdGEiOnsidXN1YXJpbyI6IlN1bW1lclNtaXRoIiwic2VjdG9yIjoxfSwiYXBwIjoiVGVzdCBKV1QifQ.S2yZJsarS46T8m2mL1BGzWWFwBdsMTBHZqmTPZS2DLM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:666/pedidos/detalles/listar/candy",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "666",
+					"path": [
+						"pedidos",
+						"detalles",
+						"listar",
+						"candy"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Paso 3 - Listar Pendientes Cerveza",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDE4MDU4NDAsImV4cCI6MTcwMTg2NTg0MCwiYXVkIjoiYjQ4NGQ3ZTJlZjljYWRhYzE1OThkNjk3NGQ2YTA1ZDQyZGYzNDZmNyIsImRhdGEiOnsidXN1YXJpbyI6Ik1vcnR5bWFuIiwic2VjdG9yIjo0fSwiYXBwIjoiVGVzdCBKV1QifQ.Ph0IYH6BaNU-oFCnY-bcLh9VbmZTuxouhNUk4BWi564",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:666/pedidos/detalles/listar/cerveza",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "666",
+					"path": [
+						"pedidos",
+						"detalles",
+						"listar",
+						"cerveza"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Paso 3 - Estado Preparacion y poner tiempo",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDE4MDU4NDAsImV4cCI6MTcwMTg2NTg0MCwiYXVkIjoiYjQ4NGQ3ZTJlZjljYWRhYzE1OThkNjk3NGQ2YTA1ZDQyZGYzNDZmNyIsImRhdGEiOnsidXN1YXJpbyI6Ik1vcnR5bWFuIiwic2VjdG9yIjo0fSwiYXBwIjoiVGVzdCBKV1QifQ.Ph0IYH6BaNU-oFCnY-bcLh9VbmZTuxouhNUk4BWi564",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "id",
+							"value": "33",
+							"type": "text"
+						},
+						{
+							"key": "estado",
+							"value": "en preparacion",
+							"type": "text"
+						},
+						{
+							"key": "tiempo",
+							"value": "00:50:00",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:666/pedidos/detalles/estado_preparacion",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "666",
+					"path": [
+						"pedidos",
+						"detalles",
+						"estado_preparacion"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Paso 4 - Cliente ve tiempo de demora",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "codigoMesa",
+							"value": "mesa1",
+							"type": "text"
+						},
+						{
+							"key": "codigoPedido",
+							"value": "p1",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:666/cliente/espera",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "666",
+					"path": [
+						"cliente",
+						"espera"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Paso 5 - Listar Pedidos Socio",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDE4MDc5NTMsImV4cCI6MTcwMTg2Nzk1MywiYXVkIjoiYjQ4NGQ3ZTJlZjljYWRhYzE1OThkNjk3NGQ2YTA1ZDQyZGYzNDZmNyIsImRhdGEiOnsidXN1YXJpbyI6IkVmZnljaWFuYSIsInNlY3RvciI6NX0sImFwcCI6IlRlc3QgSldUIn0.ucEF6bmLA48zfBLH7muOTcWdPi6VWSCGL5mDuBl-esM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:666/pedidos/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "666",
+					"path": [
+						"pedidos",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Paso 5 - obtener demora de pedido SOCIO",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDE4MDg3NDksImV4cCI6MTcwMTg2ODc0OSwiYXVkIjoiYjQ4NGQ3ZTJlZjljYWRhYzE1OThkNjk3NGQ2YTA1ZDQyZGYzNDZmNyIsImRhdGEiOnsidXN1YXJpbyI6Ikp1bGl4NDA0Iiwic2VjdG9yIjo2fSwiYXBwIjoiVGVzdCBKV1QifQ.4SSQQYRxPvJEL6lpTo8bVNFeAEA1iFLSJZDLXGwcBn0",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "codigoPedido",
+							"value": "p1",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:666/pedidos/demora",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "666",
+					"path": [
+						"pedidos",
+						"demora"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Paso 6 - cambiar estado a listo para servir",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "id",
+							"value": "33",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:666/pedidos/detalles/estado_listo",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "666",
+					"path": [
+						"pedidos",
+						"detalles",
+						"estado_listo"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Paso 7 - Servir pedidos - cambiar mesa MOZO",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDE4MDk0MTUsImV4cCI6MTcwMTg2OTQxNSwiYXVkIjoiYjQ4NGQ3ZTJlZjljYWRhYzE1OThkNjk3NGQ2YTA1ZDQyZGYzNDZmNyIsImRhdGEiOnsidXN1YXJpbyI6IkVmZnljaWFuYSIsInNlY3RvciI6NX0sImFwcCI6IlRlc3QgSldUIn0.DwYOcHuYkK9BEGDh3meF-VJ06pGuvb41LsrX4F4OVGw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "codigoPedido",
+							"value": "p1",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:666/pedidos/servir",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "666",
+					"path": [
+						"pedidos",
+						"servir"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Paso 8 - Listar mesas y estados",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:666/listar_mesas",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "666",
+					"path": [
+						"listar_mesas"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Paso 9 -Cobrar Cuenta MOZO",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDE4MDk3NDksImV4cCI6MTcwMTg2OTc0OSwiYXVkIjoiYjQ4NGQ3ZTJlZjljYWRhYzE1OThkNjk3NGQ2YTA1ZDQyZGYzNDZmNyIsImRhdGEiOnsidXN1YXJpbyI6IkVmZnljaWFuYSIsInNlY3RvciI6NX0sImFwcCI6IlRlc3QgSldUIn0.QVpi6BIwviuqKzVnl4JKqXp6GB0ha-r91KsBVaT_SW8",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "codigoPedido",
+							"value": "p1",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:666/pedidos/pagando",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "666",
+					"path": [
+						"pedidos",
+						"pagando"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Paso 10 - Cerrar mesa Socio",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDE4MDk3MzUsImV4cCI6MTcwMTg2OTczNSwiYXVkIjoiYjQ4NGQ3ZTJlZjljYWRhYzE1OThkNjk3NGQ2YTA1ZDQyZGYzNDZmNyIsImRhdGEiOnsidXN1YXJpbyI6Ikp1bGl4NDA0Iiwic2VjdG9yIjo2fSwiYXBwIjoiVGVzdCBKV1QifQ.49FqGykFxwjSQhT8dp-jKCfz6S-jMe9mYDdzgO_yHi4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "codigo",
+							"value": "mesa1",
+							"type": "text"
+						},
+						{
+							"key": "estado",
+							"value": "4",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:666/mesas/modificar",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "666",
+					"path": [
+						"mesas",
+						"modificar"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Paso 11 - Encuesta Cliente",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "codigoPedido",
+							"value": "p1",
+							"type": "text"
+						},
+						{
+							"key": "nota",
+							"value": "4",
+							"type": "text"
+						},
+						{
+							"key": "resena",
+							"value": "Todo horrible jeje",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:666/cliente/encuesta",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "666",
+					"path": [
+						"cliente",
+						"encuesta"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Paso 12 - Mejores comentarios encuesta",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDE4MTAyNDUsImV4cCI6MTcwMTg3MDI0NSwiYXVkIjoiYjQ4NGQ3ZTJlZjljYWRhYzE1OThkNjk3NGQ2YTA1ZDQyZGYzNDZmNyIsImRhdGEiOnsidXN1YXJpbyI6Ikp1bGl4NDA0Iiwic2VjdG9yIjo2fSwiYXBwIjoiVGVzdCBKV1QifQ.stqukVJPJCxxAEcnfLkntY0NhfaK6gnb2bmGnfJnddI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:666/encuesta/tres_mejores",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "666",
+					"path": [
+						"encuesta",
+						"tres_mejores"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Paso 13 - Mesa mas usada",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDE4MTAyNDUsImV4cCI6MTcwMTg3MDI0NSwiYXVkIjoiYjQ4NGQ3ZTJlZjljYWRhYzE1OThkNjk3NGQ2YTA1ZDQyZGYzNDZmNyIsImRhdGEiOnsidXN1YXJpbyI6Ikp1bGl4NDA0Iiwic2VjdG9yIjo2fSwiYXBwIjoiVGVzdCBKV1QifQ.stqukVJPJCxxAEcnfLkntY0NhfaK6gnb2bmGnfJnddI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:666/mesa_mas_usada",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "666",
+					"path": [
+						"mesa_mas_usada"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Paso 14 - desgargar PDF",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:666/download",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "666",
+					"path": [
+						"download"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

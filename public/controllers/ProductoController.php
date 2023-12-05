@@ -1,5 +1,6 @@
 <?php
 require_once './models/Producto.php';
+require_once './models/ArchivosCSV.php';
 require_once './interfaces/IApiController.php';
 
 class ProductoController implements IApiController
@@ -12,13 +13,11 @@ class ProductoController implements IApiController
         $nombre = $parametros['nombre'];
         $precio = $parametros['precio'];
         $sector = $parametros['sector'];
-        $tiempopreparacion = $parametros['tiempopreparacion'];
 
         $prod = new Producto();
         $prod->nombre = $nombre;
         $prod->precio = $precio;
         $prod->sector = $sector;
-        $prod->tiempopreparacion = $tiempopreparacion;
 
         $prod->crearUno();
 
@@ -35,7 +34,8 @@ class ProductoController implements IApiController
         if (!$producto) {
             $payload = json_encode(array("mensaje" => "El producto no existe"));
           } else {
-            $payload = json_encode($producto);
+            $payload = json_encode(array("Producto seleccionado" => $producto));
+           
           }
 
         $response->getBody()->write($payload);
@@ -47,7 +47,7 @@ class ProductoController implements IApiController
     public function TraerTodos($request, $response, $args)
     {
         $lista = Producto::obtenerTodos();
-        $payload = json_encode(array("listaProductos" => $lista));
+        $payload = json_encode(array("Lista de Productos" => $lista));
 
         $response->getBody()->write($payload);
         return $response->withHeader('Content-Type', 'application/json');
@@ -70,13 +70,50 @@ class ProductoController implements IApiController
 
         $nombre = $parametros['nombre'];
         $precio = $parametros['precio'];
-        $tiempo = $parametros['tiempo'];
-        $mensaje = Producto::modificarUno($nombre, $precio, $tiempo);
+        $mensaje = Producto::modificarUno($nombre, $precio);
 
         $payload = json_encode(array("mensaje" => $mensaje));
 
         $response->getBody()->write($payload);
         return $response
             ->withHeader('Content-Type', 'application/json');
+    }
+/////////////////////////////////////////////////////////////////////////////////
+    public function exportarTabla($request, $response, $args)
+    {
+        try {
+            ArchivosCSV::exportarTabla('productos', 'Producto', 'producto.csv');
+            //$payload = json_encode("Tabla exportada con éxito");
+            $payload = json_encode(array("mensaje" => "Tabla productos exportada"));
+            $response->getBody()->write($payload);
+            $newResponse = $response->withHeader('Content-Type', 'application/json');
+            return $newResponse;
+        } catch (\Throwable $mensaje) {
+            // Aquí maneja los errores si ocurrieron durante la exportación
+            $response->getBody()->write("Error al exportar: " . $mensaje->getMessage());
+            return $response->withStatus(500); // Devuelve un estado de error 500
+        }
+    }
+
+
+    public function ImportarTabla($request, $response, $args)
+    {
+        try
+        {
+            $archivo = ($_FILES["archivo"]);          
+            Producto::CargarCSV($archivo["tmp_name"]);
+            $payload = json_encode("Carga exitosa.");
+            $payload = json_encode(array("mensaje" => "Tabla productos exportada"));
+            $response->getBody()->write($payload);
+            $newResponse = $response->withHeader('Content-Type', 'application/json');
+        }
+        catch(Throwable $mensaje)
+        {
+            printf("Error al listar: <br> $mensaje .<br>");
+        }
+        finally
+        {
+            return $newResponse;
+        }    
     }
 }

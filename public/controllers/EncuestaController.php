@@ -8,37 +8,30 @@ class EncuestaController
     public function CargarUno($request, $response, $args)
     {
         $parametros = $request->getParsedBody();
-        $codigo = $parametros['codigo'];
-        $notaCocina = $parametros['nota_cocina'];
-        $notaMesa = $parametros['nota_mesa'];
-        $notaMozo = $parametros['nota_mozo'];
-        $notaRestaurante = $parametros['nota_restaurante'];
+        $codigo = $parametros['codigoPedido'];
+        $nota = $parametros['nota'];
         $reseña = $parametros['resena'];
 
 
         $pedido = Pedido::obtenerUno($codigo);
 
         if($pedido== null){
-            $payload = json_encode(array("mensaje" => "El codigo del pedido ingresado es invalido"));
+            $payload = json_encode(array("mensaje" => "El codigo del pedido ingresado ($codigo) es invalido"));
         }else{
-            if($pedido->estado == "2"){
+            if($pedido['estado'] == "finalizado"){
                 $encuesta = new Encuesta();
-                $encuesta->notaMesa = $notaMesa;
-                $encuesta->notaMozo = $notaMozo;
-                $encuesta->notaCocina = $notaCocina;
-                $encuesta->notaRestaurante = $notaRestaurante;
+                $encuesta->nota = $nota;
                 $encuesta->resena = $reseña;
                 $encuesta->codigoPedido = $codigo;
                 $encuesta->cargarUno();
 
-                $payload = json_encode(array("mensaje" => "Encuesta cargada"));
+                $payload = json_encode(array("mensaje" => "Encuesta cargada exitosamente! Nota: $nota - Reseña: $reseña - Pedido numero $codigo"));
             }else{
-                $payload = json_encode(array("mensaje" => "No se puede realizar la encuesta. El pedido no se encuentra finalizado"));
+                $payload = json_encode(array("mensaje" => "No se puede realizar la encuesta ya que el pedido numero $codigo no se encuentra finalizado"));
             }
             
         }
-        
-
+    
         $response->getBody()->write($payload);
         return $response
             ->withHeader('Content-Type', 'application/json');
@@ -61,6 +54,16 @@ class EncuestaController
     {
         $lista = Encuesta::obtenerTodos();
         $payload = json_encode(array("listaEncuesta" => $lista));
+
+        $response->getBody()->write($payload);
+        return $response
+            ->withHeader('Content-Type', 'application/json');
+    }
+
+    public function TraerMejoresComentarios($request, $response, $args)
+    {
+        $lista = Encuesta::obtenerTresMejoresEncuestras();
+        $payload = json_encode(array("Lista de tres mejores notas en Encuestas" => $lista));
 
         $response->getBody()->write($payload);
         return $response
