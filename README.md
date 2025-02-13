@@ -26,7 +26,13 @@ POST  //pedidos/pedido  # Se carga el detalle del pedido por medio del codigo qu
 ```
 
 ## 🎨 Capturas de Pantalla (Opcional)
+![Image](https://github.com/user-attachments/assets/b08c2713-4f71-4fcd-9e6e-d8b6f2eb1790)
 
+![Image](https://github.com/user-attachments/assets/498b88bf-4d98-4994-831f-b8dd486dd097)
+
+![Image](https://github.com/user-attachments/assets/c658d650-7dad-4b67-bcf6-985c00ab6a4f)
+
+![Image](https://github.com/user-attachments/assets/8fef1f62-2b7e-4b62-94ae-65a4d36bd8a6)
 
 ---
 💻 **Desarrollado por:** Julieta Laplace
