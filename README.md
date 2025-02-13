@@ -25,7 +25,7 @@ DELETE /productos/tiramisu  # Elimina el producto que se especifica por URL (tir
 POST  //pedidos/pedido  # Se carga el detalle del pedido por medio del codigo que éste tiene, agregando el producto elegido y su cantidad.
 ```
 
-## 🎨 Capturas de Pantalla (Opcional)
+## 🎨 Imagenes
 ![Image](https://github.com/user-attachments/assets/b08c2713-4f71-4fcd-9e6e-d8b6f2eb1790)
 
 ![Image](https://github.com/user-attachments/assets/498b88bf-4d98-4994-831f-b8dd486dd097)
